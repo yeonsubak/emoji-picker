@@ -75,6 +75,7 @@
   "dependencies": {
     "@tanstack/react-virtual": "^3.11.2",
     "clsx": "^2.1.1",
+    "emoogle-emoji-search-engine": "^1.0.2",
     "jotai": "^2.11.1",
     "node-emoji": "^2.1.3",
     "tailwind-merge": "^3.4.0",

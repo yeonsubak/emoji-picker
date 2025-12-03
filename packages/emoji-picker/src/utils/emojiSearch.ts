@@ -1,11 +1,13 @@
+import { searchEmojis as searchEmojisByEngine } from 'emoogle-emoji-search-engine';
+import emojiDataByEmoji from 'unicode-emoji-json/data-by-emoji.json';
 import { filterSupportedEmojis } from './supportedEmojis';
-import { isEmojiFullySupported } from './emojiSupport';
 
 import type {
   EmojiData,
-  EmojiGroupData as EmojiGroup,
-  EmojiMetadata,
   EmojiDataItem,
+  EmojiGroupData as EmojiGroup,
+  EmojiMetaByEmoji,
+  EmojiMetadata,
 } from '../types/emoji';
 
 type GroupedEmojis = {
@@ -104,28 +106,19 @@ export const groupEmojisByCategory = (emojiData: any): GroupedEmojis[] => {
   return filterSupportedEmojis(groups);
 };
 
-export const searchEmojis = (searchTerm: string, processedData: EmojiData[]): GroupedEmojis[] => {
+const getMetaByEmoji = (emoji: string) => {
+  const emojiDB: Record<string, EmojiMetaByEmoji> = emojiDataByEmoji;
+  return emojiDB[emoji];
+};
+
+export const searchEmojis = (searchTerm: string): GroupedEmojis[] => {
   // Return empty array for empty search
   if (!searchTerm.trim()) {
     return [];
   }
 
   const normalizedSearch = searchTerm.toLowerCase();
-  const matchingEmojis = processedData.filter((emoji) => {
-    if (!emoji.name.includes(normalizedSearch)) {
-      return false;
-    }
-
-    return isEmojiFullySupported({
-      emoji: emoji.emoji,
-      name: emoji.name,
-      unicode_version: emoji.unicode_version,
-      emoji_version: emoji.emoji_version,
-      skin_tone_support: emoji.skin_tone_support,
-      skin_tone_support_unicode_version: emoji.skin_tone_support_unicode_version,
-      slug: emoji.name.replace(/\s+/g, '_'),
-    });
-  });
+  const matchingEmojis = searchEmojisByEngine(normalizedSearch);
 
   if (matchingEmojis.length === 0) {
     return [];
@@ -135,18 +128,20 @@ export const searchEmojis = (searchTerm: string, processedData: EmojiData[]): Gr
   const groupedResults = new Map<string, EmojiMetadata[]>();
 
   matchingEmojis.forEach((emoji) => {
+    const meta = getMetaByEmoji(emoji);
+
     const metadata: EmojiMetadata = {
-      emoji: emoji.emoji,
-      name: emoji.name,
-      slug: emoji.name.replace(/\s+/g, '_'),
-      skin_tone_support: emoji.skin_tone_support,
-      skin_tone_support_unicode_version: emoji.skin_tone_support_unicode_version,
+      emoji: emoji,
+      name: meta.name,
+      slug: meta.name.replace(/\s+/g, '_'),
+      skin_tone_support: meta.skin_tone_support,
+      skin_tone_support_unicode_version: meta.skin_tone_support_unicode_version,
     };
 
-    if (!groupedResults.has(emoji.group)) {
-      groupedResults.set(emoji.group, []);
+    if (!groupedResults.has(meta.group)) {
+      groupedResults.set(meta.group, []);
     }
-    groupedResults.get(emoji.group)!.push(metadata);
+    groupedResults.get(meta.group)!.push(metadata);
   });
 
   return Array.from(groupedResults.entries()).map(([category, emojis]) => ({

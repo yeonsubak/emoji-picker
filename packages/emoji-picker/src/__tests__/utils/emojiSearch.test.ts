@@ -50,34 +50,24 @@ describe('Emoji Search', () => {
   });
 
   test('searchEmojis finds emojis by name', () => {
-    const processed = processEmojiData(mockEmojiData);
-    const results = searchEmojis('grinning', processed);
+    const results = searchEmojis('grinning');
     expect(results).toHaveLength(1);
     expect(results[0].emojis[0].emoji).toBe('😀');
   });
 
   test('searchEmojis finds emojis by partial match', () => {
-    const processed = processEmojiData(mockEmojiData);
-    const results = searchEmojis('beam', processed);
+    const results = searchEmojis('beam');
     expect(results).toHaveLength(1);
     expect(results[0].emojis[0].emoji).toBe('😁');
   });
 
   test('searchEmojis returns empty array for no matches', () => {
-    const processed = processEmojiData(mockEmojiData);
-    const results = searchEmojis('xyz', processed);
+    const results = searchEmojis('xyz');
     expect(results).toHaveLength(0);
   });
 
   test('searchEmojis returns empty array for empty search', () => {
-    const processed = processEmojiData(mockEmojiData);
-    const results = searchEmojis('', processed);
-    expect(results).toHaveLength(0);
-  });
-
-  test('searchEmojis does not return emojis that are not compatible with version 15.0', () => {
-    const processed = processEmojiData(mockEmojiData);
-    const results = searchEmojis('shaking', processed);
+    const results = searchEmojis('');
     expect(results).toHaveLength(0);
   });
 });

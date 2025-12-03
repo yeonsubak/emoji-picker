@@ -1,2 +1,2 @@
 // This value is updated during build time
-export const NPM_MONTHLY_DOWNLOADS = 1049;
+export const NPM_MONTHLY_DOWNLOADS = 29473;

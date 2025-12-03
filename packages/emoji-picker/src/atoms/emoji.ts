@@ -1,6 +1,6 @@
-import emojiData from 'unicode-emoji-json/data-by-group.json';
 import { atom } from 'jotai';
-import { processEmojiData, searchEmojis } from '../utils/emojiSearch';
+import emojiDataByGroup from 'unicode-emoji-json/data-by-group.json';
+import { searchEmojis } from '../utils/emojiSearch';
 import { isEmojiFullySupported } from '../utils/emojiSupport';
 
 import type { EmojiMetadata, SkinTone } from '../types/emoji';
@@ -20,8 +20,7 @@ export const isEmojiSelectedAtom = (rowIndex: number, columnIndex: number) =>
     return selectedPos?.row === rowIndex && selectedPos?.column === columnIndex;
   });
 
-const processedEmojiData = processEmojiData(emojiData);
-const defaultEmojis = Object.entries(emojiData).map(([category, group]) => ({
+const defaultEmojis = Object.entries(emojiDataByGroup).map(([category, group]) => ({
   category,
   emojis: (group as any).emojis
     .filter((emoji: any) => isEmojiFullySupported(emoji))
@@ -42,7 +41,7 @@ export const filteredEmojisAtom = atom((get) => {
     return defaultEmojis;
   }
 
-  return searchEmojis(search, processedEmojiData).map((group) => ({
+  return searchEmojis(search).map((group) => ({
     category: group.category,
     emojis: group.emojis,
   }));
