@@ -1,16 +1,11 @@
-import oxlintPlugin from 'vite-plugin-oxlint';
-import { defineConfig, PluginOption } from 'vite';
-import { resolve } from 'path';
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
+import { defineConfig, PluginOption } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(), 
-    tailwindcss(), 
-    oxlintPlugin(),
-  ] as PluginOption[],
+  plugins: [react(), tailwindcss()] as PluginOption[],
   base: "/",
   build: {
     outDir: "dist",
@@ -21,15 +16,12 @@ export default defineConfig({
         find: "@ferrucc-io/emoji-picker",
         replacement: resolve(
           __dirname,
-          "../packages/emoji-picker/src/index.ts",
+          "../packages/emoji-picker/src/index.ts"
         ),
       },
       {
         find: "@",
-        replacement: resolve(
-          __dirname,
-          "../packages/emoji-picker/src",
-        ),
+        replacement: resolve(__dirname, "../packages/emoji-picker/src"),
       },
     ],
   },
